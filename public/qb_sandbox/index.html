@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Query Builder Sandbox (simple)</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
+
+        <style>
+            #app{
+                width:100%;
+            }
+            .menu{
+                width:30%;
+                float:right;
+                border:1px solid #f1f1f1;
+            }
+
+
+            .menu button{
+                width:100%;
+                margin-top:10px;
+            }
+
+            .menu button:hover{
+                cursor: pointer;
+            }
+
+            .box{
+                float:left;
+                margin-right: 10px;
+                width:65%;
+
+            }
+
+            .box textarea{
+                min-height: 800px;
+                width:100%;
+            }
+        </style>
+
+
+    </head>
+    <body>
+        <!--Main container-->
+        <div id="app">
+
+            <h2>Query Builder Sandbox</h2>
+
+            <div class="result box">
+                <textarea v-model="logs">
+
+                </textarea>
+            </div>
+
+            <div class="menu">
+                <button v-for="element in menu" v-on:click="changeTest(element.action)">{{element.label}}</button>
+
+            </div>
+
+
+
+        </div>
+
+
+
+        <script type="text/javascript">
+
+var app = new Vue({
+    el: '#app',
+    data: {
+        message: 'Hello Vue!',
+        menu: [
+            {label: "Insert (simple)", action: 'insert'},
+            {label: "Update (simple)", action: "update"},
+            {label: "Sort", action: 'sort'},
+            {label: "Filter", action: "filter"},
+            {label: "Relation", action: 'relation'},
+            {label: "Validation Error ", action: "validationError"},
+            {label: "Wrong Address ", action: "notfound"},
+            {label: "Insert internationalization product", action: "postI18n"},
+            {label: "Update product languages", action: "putI18nLang"},
+            {label: "Filter internationalization - by title", action: "filterI18n"},
+            {label: "Filter internationalization - by unmatched column " , action: "filterI18nUnmatched"},
+            {label: "Filter internationalization - wrong filters" , action: "filterI18nWrongFilters"},
+            {label: "Filter internationalization - En translation" , action: "filterI18nEn"},
+            {label: "Filter internationalization - Fr translation" , action: "filterI18nFr"},
+            {label: "Filter internationalization - Ru translation" , action: "filterI18nRu"},
+            {label: "Filter internationalization - Ro translation" , action: "filterI18nRo"},
+            {label: "Filter internationalization - Bg translation" , action: "filterI18nBg"},
+            {label: "Dictionary update" , action: "diUpdate"},
+            {label: "Dictionary get" , action: "diGet"},
+            {label: "Insert product (simple)" , action: "postProduct"},
+        ],
+        token: "",
+        logs: "",
+        path: "/backend/api",
+        order: 0,
+        product: 0,
+    },
+    mounted: function () {
+        this.setUp() //method1 will execute at pageload
+    },
+    methods: {
+        setUp: function () {
+            this.$http.post(this.path + '/auth', {email: "test@mail.com", password: "test"})
+                    .then(function (response) {
+                        this.token = (response.data.data.token)
+                        Vue.http.headers.common['Authorization'] = 'Bearer ' + this.token;
+
+                        //get random record and save id for tests
+                        this.$http.get(this.path + '/orders?_sort=id&_limit=1').then(function (response) {
+                            if (response.data.data[0].id) {
+                                this.order = response.data.data[0].id
+                            }
+                        })
+
+
+                    })
+        },
+        changeTest: function (action) {
+
+            switch (action) {
+                case 'insert':
+                    this.insert()
+                    break;
+                case 'update':
+                    this.update()
+                    break;
+                case 'sort':
+                    this.sort()
+                    break;
+                case 'filter':
+                    this.filter()
+                    break;
+                case 'relation':
+                    this.relation()
+                    break;
+                case 'validationError':
+                    this.validationError()
+                    break;
+                case 'notfound':
+                    this.notFoundError()
+                    break;
+                case 'filterI18n':
+                    this.filterI18n()
+                    break;
+                case 'filterI18nUnmatched':
+                    this.filterI18nUnmatched()
+                    break;
+                case 'filterI18nWrongFilters':
+                    this.filterI18nWrongFilters()
+                    break;
+                case 'filterI18nEn':
+                    this.filterI18nEn()
+                    break;
+                case 'filterI18nFr':
+                    this.filterI18nFr()
+                    break;
+                case 'filterI18nRu':
+                    this.filterI18nRu()
+                    break;
+                case 'filterI18nRo':
+                    this.filterI18nRo()
+                    break;
+                case 'filterI18nBg':
+                    this.filterI18nBg()
+                    break;
+                case 'diUpdate':
+                    this.diUpdate()
+                    break;
+                case 'diGet':
+                    this.diGet()
+                    break;
+                case 'postProduct':
+                    this.postProduct()
+                    break;
+                case 'postI18n':
+                    this.postI18n()
+                    break;
+                case 'putI18nLang':
+                    this.putI18nLang()
+                    break;
+            }
+
+
+        },
+        addToLog: function (message) {
+            this.logs = this.logs + '\n\n' + JSON.stringify(message,null,2)
+        },
+        insert: function () {
+
+            this.$http.post(this.path + '/orders', {title: "New Test Order", sum: 200, status: {id: 1}}).then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: POST')
+                this.addToLog(response.data)
+                if (response.data.data.id) {
+                    this.order = response.data.data.id
+
+                }
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: POST')
+
+                this.addToLog(response.data)
+            })
+        },
+        update: function () {
+            this.$http.put(this.path + '/orders/' + this.order, {title: "New updated Order " + Date(), sum: 300, status: {id: 2}}).then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+                this.addToLog(response.data)
+
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+
+                this.addToLog(response.data)
+
+            })
+        },
+        sort: function () {
+            this.$http.get(this.path + '/orders?_sort=-sum&_fields=sum').then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                this.addToLog(response.data)
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                this.addToLog(response.data)
+            })
+        },
+        filter: function () {
+            this.$http.get(this.path + '/orders?_filters[]=id-eq=' + this.order).then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                this.addToLog(response.data)
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                this.addToLog(response.data)
+            })
+        },
+        relation: function () {
+            this.$http.get(this.path + '/orders?_filters[]=id-eq=' + this.order + '&_with=products,status').then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                this.addToLog(response.data)
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                this.addToLog(response.data)
+            })
+        },
+        validationError: function () {
+            this.$http.put(this.path + '/orders/' + this.order, {title: "New updated Order", status: {id: 2}}).then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+
+                this.addToLog(response.data)
+
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+
+                this.addToLog(response.data)
+
+            })
+        },
+        notFoundError: function () {
+            this.$http.get(this.path + '/rejkegjrl').then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                this.addToLog(response.data)
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                this.addToLog(response.data)
+            })
+        },
+        postI18n: function() {
+          this.$http.post(this.path + '/products',{price:2500,i18n: [{title:'Corals',language_id:2}]}).then(function (response) {
+              this.addToLog('------  URL: ' + response.url + ' ------ METHOD: POST')
+
+              this.addToLog(response.data)
+
+              if (response.data.data.id) {
+                  this.product = response.data.data.id
+              }
+
+          }, function (response) {
+              this.addToLog('------  URL: ' + response.url + ' ------ METHOD: POST')
+
+              this.addToLog(response.data)
+
+          });
+
+        },
+        putI18nLang: function(){
+          this.$http.put(this.path + '/products/'+this.product,{price:2500,i18n: [{title:'Lake',language_id:3}]}).then(function (response) {
+              this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+
+              this.addToLog(response.data)
+          }, function (response) {
+              this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+
+              this.addToLog(response.data)
+          });
+
+          this.$http.put(this.path + '/products/'+this.product,{price:2500,i18n: [{title:'Озеро',language_id:1}]}).then(function (response) {
+              this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+
+              this.addToLog(response.data)
+          }, function (response) {
+              this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+
+              this.addToLog(response.data)
+          });
+
+          this.$http.put(this.path + '/products/'+this.product,{price:2500,i18n: [{title:'Lac',language_id:2}]}).then(function (response) {
+              this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+
+              this.addToLog(response.data)
+          }, function (response) {
+              this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+
+              this.addToLog(response.data)
+          });
+
+          this.$http.put(this.path + '/products/'+this.product,{price:2500,i18n: [{title:'Езеро',language_id:4}]}).then(function (response) {
+              this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+
+              this.addToLog(response.data)
+          }, function (response) {
+              this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+
+              this.addToLog(response.data)
+          });
+
+          this.$http.put(this.path + '/products/'+this.product,{price:2500,i18n: [{title:'Lac',language_id:5}]}).then(function (response) {
+              this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+
+              this.addToLog(response.data)
+          }, function (response) {
+              this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+
+              this.addToLog(response.data)
+          });
+        },
+        filterI18n: function () {
+            this.$http.get(this.path + '/products?_filters[]=title-lk=Lac').then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                this.addToLog(response.data)
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                this.addToLog(response.data)
+            })
+        },
+        filterI18nUnmatched: function () {
+            this.$http.get(this.path + '/products?_filters[]=title-lk=Lac&_filters[]=description-eq=1').then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                this.addToLog(response.data)
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                this.addToLog(response.data)
+            })
+        },
+        filterI18nWrongFilters: function () {
+            this.$http.get(this.path + '/products?_filters=title-lk=Lac&_filters[]=description-lk=1').then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                this.addToLog(response.data)
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                this.addToLog(response.data)
+            })
+        },
+        filterI18nEn: function () {
+            Vue.http.headers.common['Accept-Language'] = 'en;q=1';
+            this.$http.get(this.path + '/products?_filters[]=title-lk=Lac').then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET , ------ HEADER: Accept-Language = en;q=1')
+
+                this.addToLog(response.data)
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET , ------ HEADER: Accept-Language = en;q=1')
+
+                this.addToLog(response.data)
+            })
+        },
+        filterI18nFr: function () {
+            Vue.http.headers.common['Accept-Language'] = 'fr;q=1';
+            this.$http.get(this.path + '/products?_filters[]=title-lk=Lac').then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET , ------ HEADER: Accept-Language = fr;q=1')
+
+                this.addToLog(response.data)
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET , ------ HEADER: Accept-Language = fr;q=1')
+
+                this.addToLog(response.data)
+            })
+        },
+        filterI18nRu: function () {
+            Vue.http.headers.common['Accept-Language'] = 'ru;q=1';
+            this.$http.get(this.path + '/products?_filters[]=title-lk=Lac').then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET , ------ HEADER: Accept-Language = ru;q=1')
+
+                this.addToLog(response.data)
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET , ------ HEADER: Accept-Language = ru;q=1')
+
+                this.addToLog(response.data)
+            })
+        },
+        filterI18nRo: function () {
+            Vue.http.headers.common['Accept-Language'] = 'ro;q=1';
+            this.$http.get(this.path + '/products?_filters[]=title-lk=Lac').then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET , ------ HEADER: Accept-Language = ro;q=1')
+
+                this.addToLog(response.data)
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET , ------ HEADER: Accept-Language = ro;q=1')
+
+                this.addToLog(response.data)
+            })
+        },
+        filterI18nBg: function () {
+            Vue.http.headers.common['Accept-Language'] = 'bg;q=1';
+            this.$http.get(this.path + '/products?_filters[]=title-lk=Lac').then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET , ------ HEADER: Accept-Language = bg;q=1')
+
+                this.addToLog(response.data)
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET , ------ HEADER: Accept-Language = bg;q=1')
+
+                this.addToLog(response.data)
+            })
+        },
+        diUpdate: function () {
+            this.$http.put(this.path + '/translation/2',{i18n: [{content:'press',language_id:'2'}]}).then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+                this.addToLog(response.data)
+
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+
+                this.addToLog(response.data)
+
+            })
+        },
+        diGet: function () {
+            this.$http.get(this.path + '/translation?_filters[]=id-lk=*').then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+                this.addToLog(response.data)
+
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                this.addToLog(response.data)
+
+            })
+        },
+        postProduct: function () {
+            this.$http.post(this.path + '/products',{price:20,i18n:[{title:"New title",description:"New Description",language_id:2}]}).then(function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: POST')
+                this.addToLog(response.data)
+
+            }, function (response) {
+                this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+
+                this.addToLog(response.data)
+
+            })
+        },
+    },
+
+})
+
+
+        </script>
+
+
+
+    </body>
+
+</html>

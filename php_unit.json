@@ -1,0 +1,283 @@
+{
+    "event": "suiteStart",
+    "suite": "",
+    "tests": 19
+}{
+    "event": "suiteStart",
+    "suite": "Unit Tests",
+    "tests": 19
+}{
+    "event": "suiteStart",
+    "suite": "Tests\\Unit\\PermissionsTest",
+    "tests": 4
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\PermissionsTest",
+    "test": "Tests\\Unit\\PermissionsTest::testGetUserRoles"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\PermissionsTest",
+    "test": "Tests\\Unit\\PermissionsTest::testGetUserRoles",
+    "status": "pass",
+    "time": 0.65623211860657,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\PermissionsTest",
+    "test": "Tests\\Unit\\PermissionsTest::testInsertDeletePermissions"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\PermissionsTest",
+    "test": "Tests\\Unit\\PermissionsTest::testInsertDeletePermissions",
+    "status": "pass",
+    "time": 0.52263307571411,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\PermissionsTest",
+    "test": "Tests\\Unit\\PermissionsTest::testAddPermissionsToRole"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\PermissionsTest",
+    "test": "Tests\\Unit\\PermissionsTest::testAddPermissionsToRole",
+    "status": "pass",
+    "time": 0.35221695899963,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\PermissionsTest",
+    "test": "Tests\\Unit\\PermissionsTest::testRoleDepartment"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\PermissionsTest",
+    "test": "Tests\\Unit\\PermissionsTest::testRoleDepartment",
+    "status": "pass",
+    "time": 0.7318229675293,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "suiteStart",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "tests": 9
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testInsert"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testInsert",
+    "status": "pass",
+    "time": 0.09417200088501,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testGet"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testGet",
+    "status": "pass",
+    "time": 0.062720060348511,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testGetWithSort"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testGetWithSort",
+    "status": "pass",
+    "time": 0.079202890396118,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testGetWithRelation"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testGetWithRelation",
+    "status": "pass",
+    "time": 0.070816040039062,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testUpdate"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testUpdate",
+    "status": "pass",
+    "time": 0.090178966522217,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testInsertRelation"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testInsertRelation",
+    "status": "pass",
+    "time": 0.1226179599762,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testUpdateRelation"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testUpdateRelation",
+    "status": "pass",
+    "time": 0.11859893798828,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testError"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testError",
+    "status": "pass",
+    "time": 0.074816942214966,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testSort"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\QuerryBuilderTest",
+    "test": "Tests\\Unit\\QuerryBuilderTest::testSort",
+    "status": "pass",
+    "time": 0.10036683082581,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "suiteStart",
+    "suite": "Tests\\Unit\\WebHookTest",
+    "tests": 6
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\WebHookTest",
+    "test": "Tests\\Unit\\WebHookTest::testAdd"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\WebHookTest",
+    "test": "Tests\\Unit\\WebHookTest::testAdd",
+    "status": "pass",
+    "time": 0.083619117736816,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\WebHookTest",
+    "test": "Tests\\Unit\\WebHookTest::testUpdate"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\WebHookTest",
+    "test": "Tests\\Unit\\WebHookTest::testUpdate",
+    "status": "pass",
+    "time": 0.09529709815979,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\WebHookTest",
+    "test": "Tests\\Unit\\WebHookTest::testDelete"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\WebHookTest",
+    "test": "Tests\\Unit\\WebHookTest::testDelete",
+    "status": "pass",
+    "time": 0.10883402824402,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\WebHookTest",
+    "test": "Tests\\Unit\\WebHookTest::testCheck"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\WebHookTest",
+    "test": "Tests\\Unit\\WebHookTest::testCheck",
+    "status": "fail",
+    "time": 0.25764989852905,
+    "trace": [
+        {
+            "file": "C:\\xampp\\htdocs\\back\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Testing\\TestResponse.php",
+            "line": 61,
+            "function": "assertTrue",
+            "class": "PHPUnit_Framework_Assert",
+            "type": "::"
+        },
+        {
+            "file": "C:\\xampp\\htdocs\\back\\tests\\Unit\\WebHookTest.php",
+            "line": 125,
+            "function": "assertSuccessful",
+            "class": "Illuminate\\Foundation\\Testing\\TestResponse",
+            "type": "->"
+        }
+    ],
+    "message": "Response status code [412] is not a successful status code.\nFailed asserting that false is true.\n",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\WebHookTest",
+    "test": "Tests\\Unit\\WebHookTest::testList"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\WebHookTest",
+    "test": "Tests\\Unit\\WebHookTest::testList",
+    "status": "pass",
+    "time": 0.1107280254364,
+    "trace": [],
+    "message": "",
+    "output": ""
+}{
+    "event": "testStart",
+    "suite": "Tests\\Unit\\WebHookTest",
+    "test": "Tests\\Unit\\WebHookTest::testGetById"
+}{
+    "event": "test",
+    "suite": "Tests\\Unit\\WebHookTest",
+    "test": "Tests\\Unit\\WebHookTest::testGetById",
+    "status": "pass",
+    "time": 0.093096971511841,
+    "trace": [],
+    "message": "",
+    "output": ""
+}

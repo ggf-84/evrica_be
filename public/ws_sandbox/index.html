@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="https://dev.evrica.io:8085/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <div id="log" style="border:1px solid #c0c0c0;height:200px;overflow-y:scroll;overflow-x:hidden; padding:10px;"></div>
+    <br>
+    <label>Token</label>
+    <input type='text' id="token" placeholder="Insert auth token" style="width:100%">
+    <br/>
+    <br/>
+
+    <button id="sendAuth">Send Auth</button>
+    <button id="sendTest">Send Test</button>
+    <button id="sendPing">Send Ping</button>
+    <button id="sendWrong">Send wrong event</button>
+    <button id="sendWrongData">Send wrong data format</button>
+
+    <script type="text/javascript">
+
+        window.onload = function () {
+
+            function addToLog(msg) {
+                document.querySelector('#log').innerHTML += '<li>' + msg + '</li>';
+                // Scroll to botom
+                document.querySelector('#log').scrollTop = document.querySelector('#log').scrollHeight;
+            }
+
+            //Websocket Connection
+//            socket = io.connect('https://dev.evrica.io:8085');
+            socket = io.connect('http://127.0.0.1:8181');
+
+            socket.on('connect', function () {
+
+                //on connect event
+                addToLog('Connected to server')
+
+                socket.on('message', function (msg) {
+                    console.log(msg.body)
+                    addToLog('fromServer: ' + JSON.stringify(msg));
+                });
+
+                socket.on('disconnect', function () {
+                    addToLog('Disconnected from server!');
+                });
+
+
+                //On key press
+                document.querySelector('#sendAuth').onclick = function () {
+                    addToLog('Send auth event')
+                    var data = { "event": "auth", "data": { "token": "" } }
+                    data.data.token = document.querySelector('#token').value
+                    socket.json.send(data)
+                    data.data.token = '....'
+                    addToLog(JSON.stringify(data))
+                };
+
+                document.querySelector('#sendTest').onclick = function () {
+                    addToLog('Send chat event')
+                    addToLog(JSON.stringify({ "event": "chat", "data": { "message": "Message to chat" }}))
+                    socket.json.send({ "event": "chat", "data": { "message": "Message to chat" } })
+                };
+
+                document.querySelector('#sendPing').onclick = function () {
+                    addToLog('Send ping event')
+                    addToLog(JSON.stringify({ "event": "ping", "data": {} }))
+                    socket.json.send({ "event": "ping", "data": {} })
+                };
+
+                document.querySelector('#sendWrong').onclick = function(){
+                    addToLog('Send wrong event')
+                    var data = {'event':'12kfjfj32f2f','data':{}}
+                    addToLog(JSON.stringify(data))
+                    socket.json.send(data)
+                }
+
+                document.querySelector('#sendWrongData').onclick = function(){
+                    addToLog('Send wrong data')
+                    var data = {"query":"this is for test","cpu":"i5 7600k"}
+                    addToLog(JSON.stringify(data))
+                    socket.json.send(data)
+                }
+
+                document.querySelector('#token').value = getCookie('token')
+
+                //Init saved tokens
+                document.querySelector('#token').addEventListener("change",  function(){
+                    var date = new Date();
+                    date.setHours(date.getHours() + 2);
+                    setCookie('token',document.querySelector('#token').value,date)
+                })
+
+                // Set cookie.
+                function setCookie(name, value, expires, path, domain, secure) {
+                    document.cookie = name + "=" + escape(value) +
+                        ((expires) ? "; expires=" + expires : "") +
+                        ((path) ? "; path=" + path : "") +
+                        ((domain) ? "; domain=" + domain : "") +
+                        ((secure) ? "; secure" : "");
+                }
+
+                // Get cookie.
+                function getCookie(name) {
+                    var cookie = " " + document.cookie;
+                    var search = " " + name + "=";
+                    var setStr = null;
+                    var offset = 0;
+                    var end = 0;
+                    if (cookie.length > 0) {
+                        offset = cookie.indexOf(search);
+                        if (offset != -1) {
+                            offset += search.length;
+                            end = cookie.indexOf(";", offset)
+                            if (end == -1) {
+                                end = cookie.length;
+                            }
+                            setStr = unescape(cookie.substring(offset, end));
+                        }
+                    }
+                    return (setStr);
+                }
+
+
+                // Delete cookie.
+                function delCookie(name) {
+                    document.cookie = name + "=" + "; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+                }
+
+
+
+            });
+        };
+    </script>
+</body>
+
+</html>

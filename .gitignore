@@ -1,0 +1,14 @@
+/node_modules
+/public/hot
+/storage/*.key
+/public/storage
+/vendor
+/ws/node_modules
+/.idea
+Homestead.json
+Homestead.yaml
+.env
+/nbproject/private/
+composer.lock
+nbproject/
+phpunit-6.4.3.phar

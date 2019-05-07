@@ -1,0 +1,43 @@
+--- 
+config:
+  phases: 
+    - 
+      arrivalRate: 10
+      duration: 20
+  target: "ws://127.0.0.1:7000"
+  variables:
+    token:
+     - "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL2JhY2suZGV2XC9iYWNrZW5kXC9hcGlcL2F1dGgiLCJpYXQiOjE0OTM5NzIxNDQsImV4cCI6MTQ5Mzk5NzM0NCwibmJmIjoxNDkzOTcyMTQ0LCJqdGkiOiI5YWE4NmM2YzVmMWRmZDkwM2UxNzQ5OGY2MGY5NjhlOSJ9.8k9w4p8c7bAJGX_9v5fNa-pVrGoTJ5KcvZlcEownyOQ"
+    company:
+     - "3"
+    guestRoom:
+     - "53"
+    userRoom:
+     - "45"
+  environments:
+    debug:
+      phases:
+        - duration: 5
+          arrivalCount: 1
+ws: 
+    rejectUnauthorized: false
+scenarios: 
+  - 
+    engine: ws
+    flow: 
+      - 
+        send: "{\"method\":\"registerAll\",\"token\":\"{{ token }}\"}"
+      - 
+        send: "{\"method\":\"refreshUserOnline\",\"room\":{{ userRoom }},\"token\":\"test_developer\"}"
+      - 
+        send: "{\"method\":\"sendMessage\",\"message\":\"ertertertret\",\"room\":{{ userRoom }},\"token\":\"test_developer\"}"
+      -
+        send: "{\"method\":\"register\",\"room\":53,\"token\":\"{{ token }}\"}"
+      -
+        send: "{\"method\":\"sendGuestMsg\",\"message\":\"testGuestMSG\",\"room\":{{ guestRoom }},\"token\":\"test_developer\",\"employee\":true}"
+      -
+        send: "{\"method\":\"registerGuest\",\"room\":\"\",\"token\":\"\",\"company\":{{ company }} }"
+      -
+        send: "{\"method\":\"sendGuestMsg\",\"message\":\"testGuestMSG from guest\",\"room\":{{ guestRoom }},\"token\":\"test_developer\"}"
+      -
+        think: 1

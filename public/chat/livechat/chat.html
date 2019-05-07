@@ -1,0 +1,187 @@
+<div id="evricachat-container" class="evricachat-container" ref="evricachat-container">
+    <template>
+        <div id="live-chat">
+
+            <header class="clearfix" @click="headerClicked" id="chat-header">
+
+
+                <h4>We are currently {{showOfflineText}}</h4>
+
+                <span class="chat-message-counter">{{unreads}}</span>
+
+            </header>
+
+            <div class="chat">
+
+                <div class="chat-history" ref="messagesContainer">
+
+                    <div v-if="showOffline === false">
+                        <div>We are currently offline , write us an email</div>
+                        <input type="text" placeholder="Your name">
+                        <input type="email" placeholder="Your email">
+                        <input type="text" placeholder="Your question">
+                        <br>
+                        <button>OK</button>
+                    </div>
+                    <div v-else>
+                        <div v-if="roomStatus">You are connected</div>
+                        <div v-if="messages.length === 0">Do you have a question ?</div>
+                    </div>
+
+                    <div v-for="(message,index) in messages" :key="index" class="box">
+
+
+
+                        <!-- agent box -->
+                        <div v-if="message.user !== null">
+                            <div class="chat-message clearfix">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpzD-cx0s1md7QU92v0ZDJWCiIKfQ8HWxIiI76o5APPy11ilZ6bA" alt=""
+                                    width="32" height="32">
+                                <div class="chat-message-content clearfix">
+                                    <span class="chat-time">{{formatDate(message.created_at)}}</span>
+                                    <h5>{{message.user.firstname}} {{message.user.lastname}}</h5>
+                                    <p v-html="message.message" class="message-data"></p>
+
+
+
+                                    <!-- img or file display -->
+                                    <span v-if="message.files.length >= 1" class="data-files">
+                                        <span v-for="(file,index) in message.files" :key="index">
+                                            <div v-if="file.thumbnail !== 'default.png' || file.extension === 'gif'">
+
+                                                <a :href="getFileUrl(file.name)" class="ref-link" target="_blank">
+                                                    <div class="thumb-message" :style="{ 'background-image': 'url(' + getFileUrl(file.name) + ')' }" v-if="file.extension === 'gif'"></div>
+                                                    <div class="thumb-message" :style="{ 'background-image': 'url(' + getThumbnailUrl(file.thumbnail) + ')' }" v-else></div>
+                                                </a>
+
+                                                <span class="name-size">
+
+                                                    <a :href="getFileDownloadUrl(file.name,file.original_name)" :download="file.original_name">
+                                                        <span class="shorten-filename">{{file.original_name}}</span>
+                                                    </a>
+
+
+                                                    {{file.size}}
+                                                </span>
+
+                                            </div>
+                                            <div v-else>
+                                                <a :href="getFileUrl(file.name)" :download="file.original_name" target="_blank">
+                                                    <span class="shorten-filename">{{file.original_name}}</span>
+                                                </a>
+                                                {{file.size}}
+                                            </div>
+
+                                        </span>
+                                    </span>
+
+
+
+                                </div>
+                                <!-- end chat-message-content -->
+                            </div>
+                            <!-- end chat-message -->
+                            <hr>
+                        </div>
+
+                        <!-- guest box -->
+                        <div v-else>
+                            <div class="chat-message clearfix">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSpzD-cx0s1md7QU92v0ZDJWCiIKfQ8HWxIiI76o5APPy11ilZ6bA" alt=""
+                                    width="32" height="32">
+                                <div class="chat-message-content clearfix">
+                                    <span class="chat-time">{{formatDate(message.created_at)}}</span>
+                                    <h5 v-if="message.guest !== null && message.guest.name !== null">{{message.guest.name}}</h5>
+                                    <h5 v-else>Guest #{{message.guest.id}}</h5>
+                                    <p v-html="message.message" class="message-data"></p>
+
+
+                                    <!-- img or file display -->
+                                    <span v-if="message.files.length >= 1" class="data-files">
+                                        <span v-for="(file,index) in message.files" :key="index">
+                                            <div v-if="file.thumbnail !== 'default.png' || file.extension === 'gif'">
+
+                                                <a :href="getFileUrl(file.name)" class="ref-link" target="_blank">
+                                                    <div class="thumb-message" :style="{ 'background-image': 'url(' + getFileUrl(file.name) + ')' }" v-if="file.extension === 'gif'"></div>
+                                                    <div class="thumb-message" :style="{ 'background-image': 'url(' + getThumbnailUrl(file.thumbnail) + ')' }" v-else></div>
+                                                </a>
+
+                                                <span class="name-size">
+
+                                                    <a :href="getFileDownloadUrl(file.name,file.original_name)" :download="file.original_name">
+                                                        <span class="shorten-filename">{{file.original_name}}</span>
+                                                    </a>
+
+
+                                                    {{file.size}}
+                                                </span>
+
+                                            </div>
+                                            <div v-else>
+                                                <a :href="getFileDownloadUrl(file.name,file.original_name)" :download="file.original_name">
+                                                    <span class="shorten-filename">{{file.original_name}}</span>
+                                                </a>
+                                                {{file.size}}
+                                            </div>
+
+                                        </span>
+                                    </span>
+
+
+                                </div>
+                                <!-- end chat-message-content -->
+                            </div>
+                            <!-- end chat-message -->
+                            <hr>
+                        </div>
+
+                        <span v-if="index === lastIndex" ref="lastMessageScroll" id="lastMessageScroll"></span>
+
+
+                    </div>
+
+                </div>
+                <!-- end chat-history -->
+
+                <span class="chat-feedback">
+                    <transition name="fade">
+                        dsads
+                        <span v-if="isTyping">
+                            {{typingMessage}}
+                        </span>
+                    </transition>
+                </span>
+
+
+                <fieldset>
+                    <input type="text" placeholder="Type your message…" autofocus v-model="messageInput" @keyup.enter="sendMessage" class="msgInput">
+
+                    <span>
+
+                        <form id="upload" enctype="multipart/form-data" ref="formUpload">
+                            <input type="file" name="files[]" class="input-file" ref="inputFile" @change="fileSelected($event)" multiple>
+                            <input type="submit">
+                        </form>
+
+                        <button type="button" class="btn-send" @click.prevent="uploadFile()" alt="unavailable">
+                            <i class="fa fa-file"></i>
+                        </button>
+                    </span>
+
+
+                </fieldset>
+
+            </div>
+            <!-- end chat -->
+
+        </div>
+        <!-- end live-chat -->
+    </template>
+</div>
+
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="http://evrica.local/chat/livechat/style.css">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.0/socket.io.js"></script>
+<script type="text/javascript" src="http://evrica.local/chat/livechat/const.js"></script>
+

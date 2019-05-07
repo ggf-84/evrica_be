@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta name="language" content="en"/>
+
+        <!--    <link rel="stylesheet" type="text/css" href="css/main.css" />-->
+        <!--    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />-->
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <!--    <script type="text/javascript" src="js/bootstrap.min.js"></script>-->
+        <title>demo chat</title>
+        <script>
+
+            var ws;
+            
+            //company id
+            var company = 8;
+            
+            //cookie will expire in days
+            var cookie_days = 7;
+            
+            $(function () {
+                function wsStart() {
+                    ws = new WebSocket("ws://127.0.0.1:8080");
+                    ws.onopen = function () {
+                        $("#chat").append("<p>system: connection is open</p>");
+                        register();
+                    };
+                    //                ws.onclose = function() { $("#chat").append("<p>system: the connection is closed, I try to reconnect</p>"); setTimeout(wsStart, 1000);};
+                    ws.onmessage = function (evt) {
+
+
+                        //       $("#chat").append("<p>" + evt.data + "</p>");
+                        //       $('#chat').scrollTop($('#chat')[0].scrollHeight);
+
+                        onMessage(evt);
+                        
+                    };
+                }
+                wsStart();
+                $('#chat').height($(window).height() - 80);
+                $('#input').focus();
+            });
+
+
+            /*
+             * try to register new guest
+             */
+
+            function register() {
+
+            
+                var request = {
+                    room: getCookie('chat_room'),
+                    method: 'registerGuest',
+                    token: getCookie('chat_token'),
+                    company: company
+                };
+
+                ws.send(JSON.stringify(request));
+            }
+
+            function onMessage(evt) {
+
+                var data = JSON.parse(evt.data);
+
+                if (!data.visible) {
+                    
+                   if(data.type == 'register_guest'){
+                   
+                        $("#chat").append("<p>" + data.token + "</p>");
+                        setCookie('chat_room',data.room,7);
+                        setCookie('chat_token',data.token,7);
+                   }
+                   
+                } else {
+                    
+                    var mess = '<p><span>'+data.sender.firstname+'</span> <span>'+data.sender.lastname+'</span><br/><small>'+data.date.date+'</small><br/>'+data.message+'</p>';
+                    $('#chat').append(mess);
+                   // $("#chat").append("<p><span>"+evt.data.firstname+"</span><span>"+evt.data.date.date+"</span>" + evt.data + "</p>");
+                 
+                  
+                }
+
+            }
+            
+        //   function 
+            
+    
+            /*
+             *  Send message
+             */
+            
+            
+            function sendMessage(message){
+                
+                var request = {
+                    method:'sendGuestMsg',
+                    message:message,
+                    room:getCookie('chat_room'),
+                    token:getCookie('chat_token')
+                };
+                
+                ws.send(JSON.stringify(request));
+             }
+        
+        
+
+
+            function setCookie(cname, cvalue, exdays) {
+                var d = new Date();
+                d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+                var expires = "expires=" + d.toUTCString();
+                document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+            }
+
+            function getCookie(cname) {
+                var name = cname + "=";
+                var decodedCookie = decodeURIComponent(document.cookie);
+                var ca = decodedCookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return "";
+            }
+
+
+
+
+        </script>
+    </head>
+
+    <body>
+        <div id="chat" style="overflow: auto;"><p>system: please wait, I try to connect to the server.</p></div>
+        <div class="navbar-fixed-bottom">
+            <form onsubmit="sendMessage($('input').val());$('input').val('');return false;">
+                <input id="input" type="text" class="form-control" placeholder="Text input" style="width: 100%;" autocomplete="off"/>
+            </form>
+        </div>
+    </body>
+</html>

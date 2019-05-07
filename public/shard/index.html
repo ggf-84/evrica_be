@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate config</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.4"></script>
+
+    <style>
+        #app {
+            width: 100%;
+        }
+
+        .menu {
+            width: 30%;
+            float: right;
+            border: 1px solid #f1f1f1;
+        }
+
+        .menu button {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .menu button:hover {
+            cursor: pointer;
+        }
+
+        .box {
+            float: left;
+            margin-right: 10px;
+            width: 65%;
+
+        }
+
+        .box textarea {
+            min-height: 800px;
+            width: 100%;
+        }
+    </style>
+
+
+</head>
+<body>
+<!--Main container-->
+<div id="app">
+
+    <h2>Shards , Service , Subdomains sandbox</h2>
+
+    <div class="result box">
+                <textarea v-model="logs">
+
+                </textarea>
+    </div>
+
+    <div class="menu">
+        <button v-for="element in menu" v-on:click="changeTest(element.action)">{{element.label}}</button>
+
+    </div>
+
+
+</div>
+
+
+<script type="text/javascript">
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello Vue!',
+            menu: [
+                {label: "Generate", action: 'generate'},
+                {label: "Insert shard", action: 'insertShard'},
+                {label: "Insert subservice", action: 'insertSubservice'},
+                {label: "Get shard", action: 'getShard'},
+                {label: "Create company", action: 'crCompany'},
+                {label: "Create subdomain", action: 'crSubdomain'},
+                {label: "Get subdomain", action: 'getSubdomain'},
+                {label: "Update subdomain", action: 'upSubdomain'},
+                {label: "Delete subdomain", action: 'delSubdomain'},
+            ],
+            token: "",
+            logs: "",
+            path: "/backend/api",
+            order: 0,
+            product: 0,
+            domain: 0,
+            shard: 0,
+            company: 0,
+        },
+        mounted: function () {
+            this.setUp() //method1 will execute at pageload
+        },
+        methods: {
+            setUp: function () {
+                this.$http.post(this.path + '/auth', {email: "test@mail.com", password: "test"})
+                    .then(function (response) {
+                        this.token = (response.data.data.token)
+                        Vue.http.headers.common['Authorization'] = 'Bearer ' + this.token;
+
+                        //get random record and save id for tests
+                        this.$http.get(this.path + '/orders?_sort=id&_limit=1').then(function (response) {
+                            if (response.data.data[0].id) {
+                                this.order = response.data.data[0].id
+                            }
+                        })
+
+
+                    })
+
+            },
+            changeTest: function (action) {
+
+                switch (action) {
+                    case 'generate':
+                        this.generate()
+                        break;
+                    case 'insertShard':
+                        this.insertShard()
+                        break;
+                    case 'insertShard':
+                        this.insertShard()
+                        break;
+                    case 'insertSubservice':
+                        this.insertSubservice()
+                        break;
+                    case 'getShard':
+                        this.getShard()
+                        break;
+                    case 'crSubdomain':
+                        this.crSubdomain()
+                        break;
+                    case 'getSubdomain':
+                        this.getSubdomain()
+                        break;
+                    case 'upSubdomain':
+                        this.upSubdomain()
+                        break;
+                    case 'delSubdomain':
+                        this.delSubdomain()
+                        break;
+                    case 'crCompany':
+                        this.crCompany()
+                        break;
+                }
+
+
+            },
+            addToLog: function (message) {
+                this.logs = this.logs + '\n\n' + JSON.stringify(message, null, 2);
+                // console.log(JSON.parse(JSON.stringify(message)));
+            },
+            generate: function () {
+
+                this.$http.get(this.path + '/configuration/shard').then(function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+                    this.addToLog(response.data)
+                    if (response.data.data.id) {
+                        this.order = response.data.data.id
+
+                    }
+                }, function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                    this.addToLog(response.data);
+                })
+            },
+            insertShard: function () {
+                this.$http.post(this.path + '/shard?name=evrica.de&country=Germany').then(function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: POST')
+                    this.addToLog(response.data)
+                    if (response.data.data.id) {
+                        this.shard = response.data.data.id
+
+                    }
+                }, function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: POST')
+
+                    this.addToLog(response.data);
+                })
+            },
+            insertSubservice: function () {
+                this.$http.post(this.path + '/services?shard_id=' + this.shard + '&service_type=mysql&name=evrica.mysql').then(function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: POST')
+                    this.addToLog(response.data)
+                    if (response.data.data.id) {
+                        this.shard = response.data.data.id
+
+                    }
+                }, function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: POST')
+
+                    this.addToLog(response.data);
+                })
+            },
+            getShard: function () {
+                this.$http.get(this.path + '/shard').then(function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+                    this.addToLog(response.data)
+                    if (response.data.data.id) {
+
+
+                    }
+                }, function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                    this.addToLog(response.data);
+                })
+            },
+            crSubdomain: function () {
+                this.$http.post(this.path + '/domain/records/company/' + this.company + '?name=data').then(function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: POST')
+                    this.addToLog(response.data)
+                    if (response.data.data.id) {
+
+
+                    }
+                }, function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: POST')
+
+                    this.addToLog(response.data);
+                })
+            },
+            crCompany: function () {
+                this.$http.post(this.path + '/company?title=evricatest').then(function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: POST')
+                    this.addToLog(response.data)
+                    if (response.data.data.id) {
+                        this.company = response.data.data.id
+
+                    }
+                }, function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: POST')
+
+                    this.addToLog(response.data);
+                })
+            },
+            getSubdomain: function () {
+                this.$http.get(this.path + '/domain/records/company/' + this.company).then(function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+                    this.addToLog(response.data)
+                    if (response.data.data.id) {
+
+
+                    }
+                }, function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: GET')
+
+                    this.addToLog(response.data);
+                })
+            },
+            upSubdomain: function () {
+                this.$http.put(this.path + '/domain/records/company/' + this.company + '?oldName=evricatest&name=star').then(function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+                    this.addToLog(response.data)
+                    if (response.data.data.id) {
+
+
+                    }
+                }, function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: PUT')
+
+                    this.addToLog(response.data);
+                })
+            },
+            delSubdomain: function () {
+                this.$http.delete(this.path + '/domain/records/company/' + this.company + '?name=star').then(function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: DELETE')
+                    this.addToLog(response.data)
+                    if (response.data.data.id) {
+
+
+                    }
+                }, function (response) {
+                    this.addToLog('------  URL: ' + response.url + ' ------ METHOD: DELETE')
+
+                    this.addToLog(response.data);
+                })
+            },
+        },
+
+    })
+
+
+</script>
+
+
+</body>
+
+</html>
